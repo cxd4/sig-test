@@ -6,6 +6,7 @@
 
 typedef void(*p_signal_handler)(int);
 static const char* sigtostr(p_signal_handler signal_handler);
+extern void trace_signal(int parameter);
 
 int main(int argc, char* argv[])
 {
@@ -26,6 +27,10 @@ int main(int argc, char* argv[])
             "SIGTERM:  %i\n",
             SIGABRT, SIGFPE, SIGILL, SIGINT, SIGSEGV, SIGTERM
         );
+        puts(
+            "If a third parameter is specified after [signal], an exception-"\
+            "recovering handler will be used to trace the raised signal."
+        );
         return 0;
     }
 
@@ -41,6 +46,11 @@ int main(int argc, char* argv[])
 
     signal_handler = signal(sig, SIG_DFL);
     printf("Handler for signal %i:  %s\n", sig, sigtostr(signal_handler));
+    if (argc > 2) {
+        signal_handler = signal(sig, trace_signal);
+        if (signal_handler == SIG_ERR)
+            fprintf(stderr, "Error defining handler for signal %i.\n", sig);
+    }
 
     status = raise(sig);
     if (status != 0) {
@@ -63,4 +73,10 @@ static const char* sigtostr(p_signal_handler signal_handler)
     if (signal_handler == NULL)
         return "NULL";
     return "(unknown)";
+}
+
+void trace_signal(int parameter)
+{
+    printf("Programmer-defined response to signal %i.\n", parameter);
+    return;
 }
