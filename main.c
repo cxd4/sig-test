@@ -4,8 +4,12 @@
 #include <limits.h>
 #include <signal.h>
 
+typedef void(*p_signal_handler)(int);
+static const char* sigtostr(p_signal_handler signal_handler);
+
 int main(int argc, char* argv[])
 {
+    p_signal_handler signal_handler;
     long signal_number;
     int sig; /* signal_number converted to (int) precision */
     int status;
@@ -35,6 +39,9 @@ int main(int argc, char* argv[])
     }
     sig = (int)(signal_number);
 
+    signal_handler = signal(sig, SIG_DFL);
+    printf("Handler for signal %i:  %s\n", sig, sigtostr(signal_handler));
+
     status = raise(sig);
     if (status != 0) {
         fprintf(stderr,
@@ -43,4 +50,17 @@ int main(int argc, char* argv[])
         return -1;
     }
     return 0;
+}
+
+static const char* sigtostr(p_signal_handler signal_handler)
+{
+    if (signal_handler == SIG_ERR)
+        return "SIG_ERR";
+    if (signal_handler == SIG_IGN)
+        return "SIG_IGN";
+    if (signal_handler == SIG_DFL)
+        return "SIG_DFL";
+    if (signal_handler == NULL)
+        return "NULL";
+    return "(unknown)";
 }
