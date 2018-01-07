@@ -59,6 +59,7 @@ int main(int argc, char* argv[])
         );
         return -1;
     }
+    puts("No unhandled exceptions encountered.  Program execution complete.");
     return 0;
 }
 
