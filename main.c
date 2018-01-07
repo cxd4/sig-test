@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
             SIGABRT, SIGFPE, SIGILL, SIGINT, SIGSEGV, SIGTERM
         );
         puts(
-            "If a third parameter is specified after [signal], an exception-"\
+            "If a third parameter is specified after [signal], an exception-\n"\
             "recovering handler will be used to trace the raised signal."
         );
         return 0;
