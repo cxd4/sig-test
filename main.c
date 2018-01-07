@@ -19,12 +19,12 @@ int main(int argc, char* argv[])
         printf("Command syntax:  %s [signal]\n", argv[0]);
         puts("Values for standard signals on this operating system:");
         printf(
-            "SIGABRT:  %i\n"\
-            "SIGFPE :  %i\n"\
-            "SIGILL :  %i\n"\
-            "SIGINT :  %i\n"\
-            "SIGSEGV:  %i\n"\
-            "SIGTERM:  %i\n",
+            "SIGABRT = %2i\n"\
+            "SIGFPE  = %2i\n"\
+            "SIGILL  = %2i\n"\
+            "SIGINT  = %2i\n"\
+            "SIGSEGV = %2i\n"\
+            "SIGTERM = %2i\n",
             SIGABRT, SIGFPE, SIGILL, SIGINT, SIGSEGV, SIGTERM
         );
         puts(
