@@ -12,6 +12,6 @@ set libs=/LIBPATH:"%DDK%\lib\crt\%target%" /LIBPATH:"%DDK%\lib\wnet\%target%"
 set LINK_FLAGS=%libs% /OUT:sig-test.exe /SUBSYSTEM:CONSOLE,5.2 /MERGE:.rdata=.text
 set C_FLAGS=/Wall /O1 /Os /Ob1 /Oi /MD /TC /link %LINK_FLAGS%
 
-%MSVC%\cl.exe %CD%\main.c %incl% %C_FLAGS%
+%MSVC%\cl.exe %CD%\main.c %CD%\catch.c %incl% %C_FLAGS%
 
 PAUSE

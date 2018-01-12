@@ -4,9 +4,7 @@
 #include <limits.h>
 #include <signal.h>
 
-typedef void(*p_signal_handler)(int);
-static const char* sigtostr(p_signal_handler signal_handler);
-extern void trace_signal(int parameter);
+#include "catch.h"
 
 int main(int argc, char* argv[])
 {
@@ -27,15 +25,8 @@ int main(int argc, char* argv[])
             "SIGTERM = %2i\n",
             SIGABRT, SIGFPE, SIGILL, SIGINT, SIGSEGV, SIGTERM
         );
-        puts(
-            "If a third parameter is specified after [signal], an exception-\n"\
-            "recovering handler will be used to trace the raised signal."
-        );
-        signal(SIGINT, trace_signal);
-        signal(SIGTERM, trace_signal);
-        putchar('\n');
-        puts("(Program paused.  Send an interrupt, or hit Enter to return.)");
-        getchar();
+        puts("Beginning tests for all standard signals.");
+        test_all_signals();
         return 0;
     }
 
@@ -66,23 +57,4 @@ int main(int argc, char* argv[])
     }
     puts("No unhandled exceptions encountered.  Program execution complete.");
     return 0;
-}
-
-static const char* sigtostr(p_signal_handler signal_handler)
-{
-    if (signal_handler == SIG_ERR)
-        return "SIG_ERR";
-    if (signal_handler == SIG_IGN)
-        return "SIG_IGN";
-    if (signal_handler == SIG_DFL)
-        return "SIG_DFL";
-    if (signal_handler == NULL)
-        return "NULL";
-    return "(unknown)";
-}
-
-void trace_signal(int parameter)
-{
-    printf("Programmer-defined response to signal %i.\n", parameter);
-    return;
 }
