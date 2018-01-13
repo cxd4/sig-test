@@ -61,6 +61,33 @@ void test_all_signals(void)
                 stderr, "Failed to set exception handler for signal %u.\n", i
             );
 
+    puts("Testing program termination signal...");
+    recovered_from_exception = setjmp(CPU_state);
+    if (recovered_from_exception)
+        set_handlers[5] = signal(SIGTERM, SIG_IGN);
+    raise(SIGTERM);
+
+    puts("Testing program abortion signal...");
+    recovered_from_exception = setjmp(CPU_state);
+    if (recovered_from_exception)
+        { /* branch */ } else
+    abort();
+
+    puts("Testing user-generated interrupt...");
+    recovered_from_exception = setjmp(CPU_state);
+    if (recovered_from_exception)
+        goto esc_loop;
+    puts("(Entering an infinite loop.  User should press Ctrl-C to recover.)");
+    for (;;)
+        continue;
+esc_loop:
+
+    puts("Testing illegal instruction exception...");
+    recovered_from_exception = setjmp(CPU_state);
+    if (recovered_from_exception)
+        func_ptr = dummy_func;
+    func_ptr();
+
     puts("Testing segmentation violation signal...");
     recovered_from_exception = setjmp(CPU_state);
     if (recovered_from_exception)
@@ -73,31 +100,6 @@ void test_all_signals(void)
         b_scratch = 2;
     a_scratch /= b_scratch;
 
-    puts("Testing illegal instruction exception...");
-    recovered_from_exception = setjmp(CPU_state);
-    if (recovered_from_exception)
-        func_ptr = dummy_func;
-    func_ptr();
-
-    puts("Testing program termination signal...");
-    recovered_from_exception = setjmp(CPU_state);
-    if (recovered_from_exception)
-        set_handlers[5] = signal(SIGTERM, SIG_IGN);
-    raise(SIGTERM);
-
-    puts("Testing program abortion signal...");
-    recovered_from_exception = setjmp(CPU_state);
-    if (recovered_from_exception == 0)
-        abort();
-
-    puts("Testing user-generated interrupt...");
-    recovered_from_exception = setjmp(CPU_state);
-    if (recovered_from_exception)
-        goto esc_loop;
-    puts("(Entering an infinite loop.  User should press Ctrl-C to recover.)");
-    for (;;)
-        continue;
-esc_loop:
     puts("Testing finished.  All signal traps were recovered from.");
     return;
 }
