@@ -31,17 +31,6 @@ SIGSEGV = 11
 SIGTERM = 15
 ```
 
-On DOS and Microsoft Windows:
-```
-Values for standard signals on this operating system:
-SIGABRT = 22
-SIGFPE  =  8
-SIGILL  =  4
-SIGINT  =  2
-SIGSEGV = 11
-SIGTERM = 15
-```
-
 ### SIGILL
 
 Causing this signal programmatically without issuing `raise(SIGILL);` is not very easy to do, because the assembler and a C compiler are both responsible for generating valid CPU operation commands from valid zeroes and ones for that CPU.  It is possible to direct the compiler or assembler to optimize or generate code for a newer version of the instruction set architecture than that being used by the person executing the program (an older version, where that instruction operation code is invalid and reserved for future implementation).  It is also possible this can be triggered if the CPU architecture in question allows self-modifying code at any point in time, and the function being executed has its binary modified with trivial bytes during the program's course.
