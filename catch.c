@@ -39,6 +39,21 @@ void illegal_inst(void)
 {
     raise(SIGILL);
 }
+void request_user_interrupt(void)
+{
+    int character;
+
+    puts("(Entering an infinite loop.  Press Ctrl-C to recover.)");
+    do {
+        character = getchar();
+    } while (character != EOF && !feof(stdin) && !ferror(stdin));
+    fprintf(
+        stderr,
+        "One or more stream errors:  feof(stdin) = %i, ferror(stdin) = %i\n",
+        feof(stdin), ferror(stdin)
+    );
+    raise(SIGINT);
+}
 
 static p_signal_handler* NULL_ptr = NULL;
 static unsigned char a_scratch = 1, b_scratch = 0;
@@ -77,9 +92,7 @@ void test_all_signals(void)
     recovered_from_exception = setjmp(CPU_state);
     if (recovered_from_exception)
         goto esc_loop;
-    puts("(Entering an infinite loop.  User should press Ctrl-C to recover.)");
-    for (;;)
-        continue;
+    request_user_interrupt();
 esc_loop:
 
     puts("Testing illegal instruction exception...");
