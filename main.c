@@ -31,6 +31,7 @@ int main(int argc, char* argv[])
     }
 
     signal_number = strtol(argv[1], NULL, 0);
+#if (LONG_MAX > INT_MAX || LONG_MIN < INT_MIN)
     if (signal_number < INT_MIN || signal_number > INT_MAX) {
         fprintf(stderr,
             "Signal ID %li exceeds precision for C library input.\n",
@@ -38,6 +39,7 @@ int main(int argc, char* argv[])
         );
         return -1; /* We don't really want to expose raising invalid signals. */
     }
+#endif
     sig = (int)(signal_number);
 
     signal_handler = signal(sig, SIG_DFL);
